@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "823346103645",
+    "firebase_url": "https://wodriver-149916.firebaseio.com",
+    "project_id": "wodriver-149916",
+    "storage_bucket": "wodriver-149916.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:823346103645:android:73e0e057de441d9a",
+        "android_client_info": {
+          "package_name": "com.wodriver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "823346103645-ed0hul5lh1sbmidf9r7oe9l9ul44f916.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDeRQd6VOwEXHnkqEd0IS9B0OX7YOu_zCE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

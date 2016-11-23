@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">WoDriver</string>
+    <string name="download_queue_provider_authority">com.amazonaws.mobile.downloader-com.amazon.wodriver</string>
+
+    <string name="main_nav_menu_default_user_text">\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020</string>
+
+    <string name="button_text_sign_in">SIGN IN</string>
+    <string name="button_text_sign_out">SIGN OUT</string>
+
+    <string name="sign_in_email">Email</string>
+    <string name="sign_in_username">Username/Phone Number</string>
+    <string name="sign_in_password">Password</string>
+    <string name="sign_in_new_account">Create New Account</string>
+    <string name="sign_in_forgot_password">Forgot Your Password?</string>
+    <string name="sign_in_or">or sign in with</string>
+
+    <string name="title_activity_sign_in">Sign-in</string>
+
+    <string name="facebook_app_id">1719394704949735</string>
+
+    <string name="android_api_key">AIzaSyDeRQd6VOwEXHnkqEd0IS9B0OX7YOu_zCE</string>
+</resources>
+

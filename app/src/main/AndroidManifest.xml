@@ -41,9 +41,26 @@
             android:launchMode="singleInstance"
             android:label="@string/app_name">
         </activity>
+        <activity
+            android:name=".AWS.userpool.ForgotPasswordActivity"
+            android:label="Forgot Password"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            >
 
-        <activity android:name=".Map"
-            android:label="Map">
+        </activity>
+        <activity android:name=".AWS.userpool.MFAActivity"
+            android:label="MFA Code"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize">
+
+        </activity>
+        <activity android:name=".AWS.userpool.SignUpActivity"
+            android:label="Sign Up"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize">
+
+        </activity>
+        <activity android:name=".AWS.userpool.SignUpConfirmActivity"
+            android:label="Confirm Account"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize">
 
         </activity>
 

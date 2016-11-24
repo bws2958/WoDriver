@@ -6,13 +6,20 @@
     android:layout_height="match_parent"
     tools:context="com.wodriver.MainActivity">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <!-- The Main Content View -->
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:map="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainActivity" >
 
-    </RelativeLayout>
+        map:cameraZoom="16"
+        map:mapType="normal"
+
+        tools:context="com.wodriver.Map"
+        />
 
     <LinearLayout
         android:id="@+id/main_content_layout"
@@ -35,14 +42,7 @@
             android:id="@+id/main_fragment_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
-
-            <Button
-                android:text="지도보기"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/map" />
-        </FrameLayout>
+            android:layout_weight="1"/>
     </LinearLayout>
 
     <!-- navigation drawer -->

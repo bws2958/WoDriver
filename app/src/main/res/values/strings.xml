@@ -4,9 +4,17 @@
 
     <string name="main_nav_menu_default_user_text">\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020</string>
 
+    <!-- Key Value -->
+    <string name="facebook_app_id">1719394704949735</string>
+    <string name="android_api_key">AIzaSyDeRQd6VOwEXHnkqEd0IS9B0OX7YOu_zCE</string>
+
     <string name="button_text_sign_in">SIGN IN</string>
     <string name="button_text_sign_out">SIGN OUT</string>
 
+    <string name="title_activity_sign_in">Sign-in</string>
+    <string name="title_activity_forgot_password">Forgot Password</string>
+
+    <!-- Sign In Text -->
     <string name="sign_in_email">Email</string>
     <string name="sign_in_username">Username/Phone Number</string>
     <string name="sign_in_password">Password</string>
@@ -14,10 +22,47 @@
     <string name="sign_in_forgot_password">Forgot Your Password?</string>
     <string name="sign_in_or">or sign in with</string>
 
-    <string name="title_activity_sign_in">Sign-in</string>
+    <!-- Sign Up Text -->
+    <string name="sign_up_header">Enter the following information to sign up.</string>
+    <string name="username_text">Username</string>
+    <string name="given_name_text">Given name</string>
+    <string name="email_address_text">Email address</string>
+    <string name="phone_number_text">Phone number</string>
+    <string name="title_activity_sign_up">Sign Up</string>
 
-    <string name="facebook_app_id">1719394704949735</string>
+    <!-- Forgot Password Text -->
+    <string name="forgot_password_header">Forgot your password?</string>
+    <string name="forgot_password_body">Set your new password with the verification code that was sent to you.</string>
+    <string name="forgot_password_input_code_hint">Verification code</string>
+    <string name="forgot_password_button_hint">Set password</string>
 
-    <string name="android_api_key">AIzaSyDeRQd6VOwEXHnkqEd0IS9B0OX7YOu_zCE</string>
+    <!-- Sign Up Confirm Text -->
+    <string name="sign_up_confirm_title">Confirm your account</string>
+    <string name="sign_up_confirm_code_sent">A confirmation code was sent.</string>
+    <string name="sign_up_confirm_enter_code">Please enter the code below to confirm your account.</string>
+    <string name="sign_up_confirm_code">Confirmation code</string>
+    <string name="sign_up_confirm_text">Confirm</string>
+
+    <!-- Cognito Sign In Text -->
+    <string name="login_failed">Login failed.</string>
+    <string name="login_success">Login succeeded.</string>
+    <string name="password_change_failed">Password change failed.</string>
+    <string name="password_change_success">Password change succeeded.</string>
+    <string name="sign_up_confirm_failed">Sign up confirmation failed.</string>
+    <string name="sign_up_confirm_success">Sign up confirmation succeeded.</string>
+    <string name="sign_up_failed">Sign up failed.</string>
+    <string name="sign_up_success">Sign up succeeded.</string>
+    <string name="title_activity_sign_up_confirm">Confirm Account</string>
+
+    <!-- MFA Activity Text -->
+    <string name="mfa_header">MFA verification is required to authenticate.</string>
+    <string name="mfa_code_sent_message">Code sent.</string>
+    <string name="verify_button_text">Verify</string>
+
+    <string name="fragment_instruction_overview_header">Overview</string>
+    <string name="fragment_instruction_description_header">Sample App Features</string>
+
+    <string name="main_nav_menu_item_home">Home</string>
+
 </resources>
 

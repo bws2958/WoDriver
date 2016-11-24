@@ -1,16 +1,28 @@
 package com.wodriver;
 
 import android.content.Intent;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 
 import com.amazonaws.mobile.AWSMobileClient;
 import com.amazonaws.mobile.user.IdentityManager;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+import com.wodriver.AWS.Configuration;
+import com.wodriver.navication.NavigationDrawer;
+import com.wodriver.AWS.UserSettings;
+
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener{
     /** Class name for log messages. */
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
@@ -23,26 +35,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /** Bundle key for saving/restoring the toolbar title. */
     private static final String BUNDLE_KEY_TOOLBAR_TITLE = "title";
 
+    /** Google Map Object */
+    private GoogleMap mMap;
+
+    /** Our navigation drawer class for handling navigation drawer logic. */
+    private NavigationDrawer navigationDrawer;
+
     /** Buttons in drawerlayout */
     private Button signOutButton;
     private Button signInButton;
-
-    /** Buttons in main layout*/
-    private Button showMap;
-
-    private void setupToolbar(final Bundle savedInstanceState){
-        toolbar = (Toolbar)findViewById(R.id.toolbar);
-
-        setSupportActionBar(toolbar);
-
-        if(savedInstanceState != null){
-            assert getSupportActionBar() != null;
-
-            getSupportActionBar().setTitle(
-                    savedInstanceState.getCharSequence(BUNDLE_KEY_TOOLBAR_TITLE)
-            );
-        }
-    }
 
     private void setupSignInButtons(){
         signOutButton = (Button) findViewById(R.id.button_signout);
@@ -54,6 +55,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final boolean isUserSignedIn = identityManager.isUserSignedIn();
         signOutButton.setVisibility(isUserSignedIn ? View.VISIBLE : View.INVISIBLE);
         signInButton.setVisibility(!isUserSignedIn ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    private void setupNavigationMenu(final Bundle savedInstanceState) {
+        final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final ListView drawerItems = (ListView) findViewById(R.id.nav_drawer_items);
+
+        // Create the navigation drawer.
+        navigationDrawer = new NavigationDrawer(this, toolbar, drawerLayout, drawerItems,
+                R.id.main_fragment_container);
+
+        // Add navigation drawer menu items.
+        // Home isn't a demo, but is fake as a demo.
+        Configuration.Feature home = new Configuration.Feature();
+        home.iconResId = R.mipmap.icon_home;
+        home.titleResId = R.string.main_nav_menu_item_home;
+        navigationDrawer.addDemoFeatureToMenu(home);
+
+        for (Configuration.Feature demoFeature : Configuration.getFeatureList()) {
+            navigationDrawer.addDemoFeatureToMenu(demoFeature);
+        }
+
+        if (savedInstanceState == null) {
+            // Add the home fragment to be displayed initially.
+            navigationDrawer.showHome();
+        }
     }
 
     @Override
@@ -68,8 +94,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         setContentView(R.layout.activity_main);
 
-        showMap = (Button) findViewById(R.id.map);
-        showMap.setOnClickListener(this);
+//        setupToolbar(savedInstanceState);
+
+        setupNavigationMenu(savedInstanceState);
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
     }
 
     public void onClick(final View view){
@@ -88,12 +121,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             return;
         }
+    }
 
-        if(view == showMap){
-            startActivity(new Intent(this, Map.class));
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
 
-            return;
-        }
+        // Add a marker in Sydney and move the camera
+        LatLng Ajou = new LatLng(37.284327, 127.044414);
+        mMap.addMarker(new MarkerOptions().position(Ajou).title("Marker in Ajou"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(Ajou));
     }
 
     protected void onResume(){

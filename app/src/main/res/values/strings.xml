@@ -63,6 +63,14 @@
     <string name="fragment_instruction_description_header">Sample App Features</string>
 
     <string name="main_nav_menu_item_home">Home</string>
+    <string-array name="item_array">
+        <item>가</item>
+        <item>나</item>
+        <item>다</item>
+        <item>라</item>
+    </string-array>
 
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="drawer_open">Open navigation drawer</string>
 </resources>
 

@@ -9,6 +9,7 @@ import android.view.View;
 import com.amazonaws.mobile.user.signin.CognitoUserPoolsSignInProvider;
 import com.wodriver.R;
 import com.wodriver.SignInActivity;
+import com.wodriver.util.DBManager;
 import com.wodriver.util.ViewHelper;
 
 /**
@@ -16,12 +17,16 @@ import com.wodriver.util.ViewHelper;
  */
 
 public class SignUpActivity extends Activity{
-    private static final String LOG_TAG = SignInActivity.class.getSimpleName();
+    private static final String LOG_TAG = SignUpActivity.class.getSimpleName();
+
+    private DBManager dbManager;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+
+        dbManager = new DBManager(getApplicationContext(), "WoDriver.db", null, 1);
     }
 
     public void signUp(final View view){
@@ -45,6 +50,7 @@ public class SignUpActivity extends Activity{
 
         setResult(RESULT_OK, intent);
 
+        Log.d(LOG_TAG, "finish");
         finish();
     }
 }

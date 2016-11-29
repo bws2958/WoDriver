@@ -27,6 +27,8 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.wodriver.MainActivity;
+import com.wodriver.SignInActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,7 +69,6 @@ public class FacebookSignInProvider implements SignInProvider {
      * @param context the context.
      */
     public FacebookSignInProvider(final Context context) {
-
         if (!FacebookSdk.isInitialized()) {
             Log.d(LOG_TAG, "Initializing Facebook SDK...");
             FacebookSdk.sdkInitialize(context, new FacebookSdk.InitializeCallback() {
@@ -120,6 +121,7 @@ public class FacebookSignInProvider implements SignInProvider {
                                                        final View buttonView,
                                                        final IdentityManager.SignInResultsHandler resultsHandler) {
 
+
         FacebookSdk.sdkInitialize(signInActivity);
 
         if (buttonView == null) {
@@ -131,8 +133,11 @@ public class FacebookSignInProvider implements SignInProvider {
         LoginManager.getInstance().registerCallback(facebookCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Log.d(LOG_TAG, "Facebook provider sign-in succeeded.");
+
+                signInActivity.finish();
+                Log.d(LOG_TAG, "Facebook provider sign-in succeeded. ");
                 resultsHandler.onSuccess(FacebookSignInProvider.this);
+
             }
 
             @Override
@@ -141,7 +146,6 @@ public class FacebookSignInProvider implements SignInProvider {
                 resultsHandler.onCancel(FacebookSignInProvider.this);
             }
 
-            @Override
             public void onError(FacebookException exception) {
                 Log.e(LOG_TAG, "Facebook provider sign-in error: " + exception.getMessage());
                 resultsHandler.onError(FacebookSignInProvider.this, exception);

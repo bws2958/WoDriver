@@ -30,6 +30,9 @@ public class AWSConfiguration {
         "c8a0e9d1e974423a8976398b2b27928c";
     // Amazon Mobile Analytics region
     public static final Regions AMAZON_MOBILE_ANALYTICS_REGION = Regions.US_EAST_1;
+    // Google Client ID for Web application
+    public static final String GOOGLE_CLIENT_ID =
+            "823346103645-ed0hul5lh1sbmidf9r7oe9l9ul44f916.apps.googleusercontent.com";
     // GOOGLE CLOUD MESSAGING SENDER ID
     public static final String GOOGLE_CLOUD_MESSAGING_SENDER_ID =
         "823346103645";

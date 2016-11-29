@@ -49,10 +49,10 @@ public class SignInManager {
         final FacebookSignInProvider facebookSignInProvider = new FacebookSignInProvider(context);
         addSignInProvider(facebookSignInProvider);
 
-//        // Initialize Cognito User Pools SDK.
-//        final CognitoUserPoolsSignInProvider cognitoUserPoolsSignInProvider =
-//                new CognitoUserPoolsSignInProvider(context);
-//        addSignInProvider(cognitoUserPoolsSignInProvider);
+        // Initialize Cognito User Pools SDK.
+        final CognitoUserPoolsSignInProvider cognitoUserPoolsSignInProvider =
+                new CognitoUserPoolsSignInProvider(context);
+        addSignInProvider(cognitoUserPoolsSignInProvider);
     }
 
     /**

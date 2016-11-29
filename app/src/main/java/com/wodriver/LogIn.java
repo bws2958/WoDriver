@@ -1,6 +1,5 @@
 package com.wodriver;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Geocoder;
@@ -59,10 +58,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends FragmentActivity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+/**
+ * Created by user on 2016-11-30.
+ */
+
+public class LogIn extends FragmentActivity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         LocationListener, OnMapReadyCallback{
 
-    public static Activity activity;
 
     private static final String TAG = "@@@";
     private GoogleApiClient mGoogleApiClient = null;
@@ -112,34 +114,41 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private LocationManager mLocMgr;
 
     /** Buttons in drawerlayout */
-    private Button signUpButton;
+    private Button signOutButton;
     private Button signInButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        activity = MainActivity.this;
+        setContentView(R.layout.activity_login);
 
         AWSMobileClient.initializeMobileClientIfNecessary(this);
         final AWSMobileClient awsMobileClient = AWSMobileClient.defaultMobileClient();
         identityManager = awsMobileClient.getIdentityManager();
 
-        setContentView(R.layout.activity_main);
+        MainActivity MA = (MainActivity)MainActivity.activity;
+        MA.finish();
 
-        signInButton = (Button) findViewById(R.id.button_signin);
-        signInButton.setOnClickListener(this);
-
-        signUpButton = (Button) findViewById(R.id.button_signup);
-        signUpButton.setOnClickListener(this);
+        signOutButton = (Button) findViewById(R.id.button_signout);
+        signOutButton.setOnClickListener(this);
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         mapFragment = (MapFragment) getFragmentManager()
-                .findFragmentById(R.id.map);
+                .findFragmentById(R.id.map1);
         mapFragment.getMapAsync(this);
 
-//        ArrayList<CustomList> list = new ArrayList
+        ArrayList<CustomList> list = new ArrayList<CustomList>();
+
+        list.add(new CustomList("a"));
+        list.add(new CustomList("b"));
+
+        listView = (ListView)findViewById(R.id.nav_drawer_items);
+
+        listAdapter adapter = new listAdapter(getApplicationContext(), R.layout.list_item, list);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(listener);
 
         new Thread(){
             @Override
@@ -413,6 +422,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             mGoogleApiClient.disconnect();
         }
         super.onStop();
+
+        identityManager.signOut();
     }
 
     @Override
@@ -453,7 +464,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         //지도 상에서 보여주는 영역 이동
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
+//        googleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
         googleMap.getUiSettings().setCompassEnabled(true);
 
         LatLng warning_area = new LatLng(37.284331, 127.044453);
@@ -608,29 +619,15 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     // GPS 가 ON으로 변경되었을 때의 처리.
                     setGPS = true;
 
-                    mapFragment.getMapAsync(MainActivity.this);
+                    mapFragment.getMapAsync(LogIn.this);
                 }
                 break;
         }
     }
-//
-//    private void setupSignInButtons(){
-//        signOutButton = (Button) findViewById(R.id.button_signout);
-//        signOutButton.setOnClickListener(this);
-//
-//        signInButton = (Button) findViewById(R.id.button_signin);
-//        signInButton.setOnClickListener(this);
-//
-//        final boolean isUserSignedIn = identityManager.isUserSignedIn();
-//
-//        signOutButton.setVisibility(isUserSignedIn ? View.VISIBLE : View.INVISIBLE);
-//        signInButton.setVisibility(!isUserSignedIn ? View.VISIBLE : View.INVISIBLE);
-//
-//    }
 
-   public boolean onOptionsItemSelected(MenuItem item){
-       return true;
-   }
+    public boolean onOptionsItemSelected(MenuItem item){
+        return true;
+    }
 
     private AdapterView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
         @Override
@@ -640,30 +637,23 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     };
 
     public void onClick(final View view){
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout1);
 
-        if(view == signUpButton){
-            // Start the sign-in activity. Do not finish this activity to allow the user to navigate back.
-            startActivity(new Intent(this, SignUpActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+        if(view == signOutButton){
+            // The user is currently signed in with a provider. Sign out of that provider.
+            identityManager.signOut();
+            startActivity(new Intent(this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+            finish();
 //            // Close the navigation drawer.
             drawerLayout.closeDrawers();
-            return;
-        }
-        if(view == signInButton){
-            // Start the sign-in activity. Do not finish this activity to allow the user to navigate back.
-            startActivity(new Intent(this, SignInActivity.class));
 
-//            // Close the navigation drawer.
-            drawerLayout.closeDrawers();
-//            finish();
             return;
         }
+
     }
 
     protected void onResume(){
         super.onResume();
-
-//        setupSignInButtons();
 
         // Obtain a reference to the mobile client
         final AWSMobileClient awsMobileClient = AWSMobileClient.defaultMobileClient();
@@ -673,6 +663,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         if (mGoogleApiClient != null)
             mGoogleApiClient.connect();
+
     }
 
     protected void onPause(){
@@ -689,4 +680,5 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         awsMobileClient.handleOnPause();
 
     }
+
 }

@@ -1,10 +1,10 @@
-package com.wodriver.navication;
+package com.wodriver.AWS.navigation;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -23,16 +23,12 @@ import android.widget.TextView;
 import com.amazonaws.mobile.AWSMobileClient;
 import com.amazonaws.mobile.user.IdentityManager;
 import com.amazonaws.mobile.user.IdentityProvider;
-import com.wodriver.AWS.Configuration;
-import com.wodriver.AWS.HomeFragment;
-import com.wodriver.AWS.InstructionFragment;
 import com.wodriver.R;
+//import com.mysampleapp.demo.DemoConfiguration
+//import com.mysampleapp.demo.DemoInstructionFragment;
+//import com.mysampleapp.demo.HomeDemoFragment;;
 
 import static com.wodriver.R.string.app_name;
-
-/**
- * Created by user on 2016-11-24.
- */
 
 public class NavigationDrawer {
     private AppCompatActivity containingActivity;
@@ -45,7 +41,7 @@ public class NavigationDrawer {
 
     /** The view group that will contain the navigation drawer menu items. */
     private ListView drawerItems;
-    private ArrayAdapter<Configuration.Feature> adapter;
+//    private ArrayAdapter<DemoConfiguration.DemoFeature> adapter;
 
     /** The id of the fragment container. */
     private int fragmentContainerId;
@@ -65,48 +61,48 @@ public class NavigationDrawer {
         // Keep a reference to the activity containing this navigation drawer.
         this.containingActivity = activity;
         this.drawerItems = drawerItemsContainer;
-        adapter = new ArrayAdapter<Configuration.Feature>(activity, R.layout.nav_drawer_item) {
-            @Override
-            public View getView(final int position, final View convertView,
-                                final ViewGroup parent) {
-                View view = convertView;
-                if (view == null) {
-                    view = activity.getLayoutInflater().inflate(R.layout.nav_drawer_item, parent, false);
-                }
-                final Configuration.Feature item = getItem(position);
-                ((ImageView) view.findViewById(R.id.drawer_item_icon)).setImageResource(item.iconResId);
-                ((TextView) view.findViewById(R.id.drawer_item_text)).setText(item.titleResId);
-                return view;
-            }
-        };
-        drawerItems.setAdapter(adapter);
-        drawerItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(final AdapterView<?> parent, final View view,
-                                    final int position, final long id) {
-                final FragmentManager fragmentManager = activity.getSupportFragmentManager();
-
-                // Clear back stack when navigating from the Nav Drawer.
-                fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-
-                if (position == 0) {
-                    // home
-                    showHome();
-                    return;
-                }
-
-                Configuration.Feature item = adapter.getItem(position);
-//                final Fragment fragment = InstructionFragment.newInstance(item.name);
-
-                activity.getSupportFragmentManager()
-                        .beginTransaction()
-//                        .replace(fragmentContainerId, fragment, item.name)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .commit();
-
-                closeDrawer();
-            }
-        });
+//        adapter = new ArrayAdapter<DemoConfiguration.DemoFeature>(activity, R.layout.nav_drawer_item) {
+//            @Override
+//            public View getView(final int position, final View convertView,
+//                                final ViewGroup parent) {
+//                View view = convertView;
+//                if (view == null) {
+//                    view = activity.getLayoutInflater().inflate(R.layout.nav_drawer_item, parent, false);
+//                }
+//                final DemoConfiguration.DemoFeature item = getItem(position);
+//                ((ImageView) view.findViewById(R.id.drawer_item_icon)).setImageResource(item.iconResId);
+//                ((TextView) view.findViewById(R.id.drawer_item_text)).setText(item.titleResId);
+//                return view;
+//            }
+//        };
+//        drawerItems.setAdapter(adapter);
+//        drawerItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(final AdapterView<?> parent, final View view,
+//                                    final int position, final long id) {
+//                final FragmentManager fragmentManager = activity.getSupportFragmentManager();
+//
+//                // Clear back stack when navigating from the Nav Drawer.
+//                fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//
+//                if (position == 0) {
+//                    // home
+////                    showHome();
+//                    return;
+//                }
+//
+////                DemoConfiguration.DemoFeature item = adapter.getItem(position);
+////                final Fragment fragment = DemoInstructionFragment.newInstance(item.name);
+////
+////                activity.getSupportFragmentManager()
+////                        .beginTransaction()
+////                        .replace(fragmentContainerId, fragment, item.name)
+////                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+////                        .commit();
+////
+////                closeDrawer();
+//            }
+//        });
         this.drawerLayout = layout;
         this.fragmentContainerId = fragmentContainerId;
 
@@ -194,25 +190,25 @@ public class NavigationDrawer {
         }
     }
 
-    public void showHome() {
-        final Fragment fragment = new HomeFragment();
+//    public void showHome() {
+//        final Fragment fragment = new HomeDemoFragment();
+//
+//        containingActivity.getSupportFragmentManager()
+//                .beginTransaction()
+//                .replace(fragmentContainerId, fragment, HomeDemoFragment.class.getSimpleName())
+//                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+//                .commit();
+//
+//        // Set the title for the fragment.
+//        final ActionBar actionBar = containingActivity.getSupportActionBar();
+//        actionBar.setTitle(R.string.app_name);
+//        closeDrawer();
+//    }
 
-        containingActivity.getSupportFragmentManager()
-                .beginTransaction()
-                .replace(fragmentContainerId, fragment, HomeFragment.class.getSimpleName())
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit();
-
-        // Set the title for the fragment.
-        final ActionBar actionBar = containingActivity.getSupportActionBar();
-        actionBar.setTitle(app_name);
-        closeDrawer();
-    }
-
-    public void addDemoFeatureToMenu(Configuration.Feature feature) {
-        adapter.add(feature);
-        adapter.notifyDataSetChanged();
-    }
+//    public void addDemoFeatureToMenu(DemoConfiguration.DemoFeature demoFeature) {
+//        adapter.add(demoFeature);
+//        adapter.notifyDataSetChanged();
+//    }
 
     /**
      * Closes the navigation drawer.

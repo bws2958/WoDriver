@@ -2,6 +2,7 @@ package com.wodriver.AWS.userpool;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,7 +10,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobile.user.signin.CognitoUserPoolsSignInProvider;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.wodriver.LogIn;
+import com.wodriver.ManagerClass;
+import com.wodriver.MapperClass;
 import com.wodriver.R;
 import com.wodriver.SignInActivity;
 import com.wodriver.util.DBManager;
@@ -67,16 +73,48 @@ public class SignUpActivity extends Activity implements View.OnClickListener{
             email = editText3.getText().toString();
             phone = editText4.getText().toString();
 
+            new updatetable().execute();
 
-            dbManager = new DBManager(getApplicationContext(), "WoDriver.db", null, 1);
+
+
+//            dbManager = new DBManager(getApplicationContext(), "WoDriver.db", null, 1);
 
 //            dbManager.delete("DELETE FROM USER_INFO");
-            dbManager.insert("insert into USER_INFO values(null, '" + username + "', '" + password + "', '" + givenName + "', '" + email + "', '" + phone + "');");
-//            Toast.makeText(getApplicationContext(), passsword, Toast.LENGTH_LONG).show();
-            Toast.makeText(getApplicationContext(), dbManager.PrintData(), Toast.LENGTH_LONG).show();
+//            dbManager.insert("insert into USER_INFO values(null, '" + username + "', '" + password + "', '" + givenName + "', '" + email + "', '" + phone + "');");
+
+//            Toast.makeText(getApplicationContext(), dbManager.PrintData(), Toast.LENGTH_LONG).show();
         }
 
         finish();
+    }
+
+    private class updatetable extends AsyncTask<Void, Void, Integer>{
+        protected Integer doInBackground(Void... params){
+            ManagerClass managerClass = new ManagerClass();
+            CognitoCachingCredentialsProvider credentialsProvider = managerClass.getcredentials(SignUpActivity.this);
+
+            MapperClass mapperClass = new MapperClass();
+            mapperClass.setName(username);
+            mapperClass.setTitle(givenName);
+            mapperClass.setPassword(password);
+
+            if(credentialsProvider != null && managerClass != null){
+                DynamoDBMapper dynamoDBMapper = managerClass.intiDynamoClient(credentialsProvider);
+                dynamoDBMapper.save(mapperClass);
+            }else{
+                return 2;
+            }
+            return 1;
+        }
+
+        protected void onPostExecute(Integer integer){
+            super.onPostExecute(integer);
+            if(integer == 1){
+                Toast.makeText(SignUpActivity.this, "update success", Toast.LENGTH_LONG).show();
+            }else if(integer == 2){
+                Toast.makeText(SignUpActivity.this, "fail updating", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
 //    public void signUp(final View view){

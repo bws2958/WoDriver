@@ -141,8 +141,8 @@ public class LogIn extends FragmentActivity implements View.OnClickListener, Goo
 
         ArrayList<CustomList> list = new ArrayList<CustomList>();
 
-        list.add(new CustomList("a"));
-        list.add(new CustomList("b"));
+        list.add(new CustomList("사고정보"));
+        list.add(new CustomList("내 정보"));
 
         listView = (ListView)findViewById(R.id.nav_drawer_items);
 
@@ -463,22 +463,40 @@ public class LogIn extends FragmentActivity implements View.OnClickListener, Goo
         googleMap.addMarker(markerOptions);
 
         //지도 상에서 보여주는 영역 이동
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-//        googleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
+//        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+//        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         googleMap.getUiSettings().setCompassEnabled(true);
 
         LatLng warning_area = new LatLng(37.284331, 127.044453);
-        MarkerOptions markerOptions1 = new MarkerOptions();
-        markerOptions1.position(warning_area);
-        markerOptions1.title("warning_area");
-        warningMap.addMarker(markerOptions1);
-
+        setDangerArea(warning_area);
         warning_area = new LatLng(37.286552, 127.045823);
-        markerOptions1 = new MarkerOptions();
-        markerOptions1.position(warning_area);
-        markerOptions1.title("warning_area");
-        warningMap.addMarker(markerOptions1);
-
+        setDangerArea(warning_area);
+        warning_area = new LatLng(37.24547476, 127.03849092);
+        setDangerArea(warning_area);
+        warning_area = new LatLng(37.28572541, 127.00800026);
+        setDangerArea(warning_area);
+        warning_area = new LatLng(37.31245287, 127.02150381);
+        setDangerArea(warning_area);
+        warning_area = new LatLng(37.27734165, 126.97833214);
+        setDangerArea(warning_area);
+        warning_area = new LatLng(37.2421721, 126.98931943);
+        setDangerArea(warning_area);
+        warning_area = new LatLng(37.25688354, 126.9957833);
+        setDangerArea(warning_area);
+        warning_area = new LatLng(37.30887795, 127.05236752);
+        setDangerArea(warning_area);
+        warning_area = new LatLng(37.26210726, 127.00328197);
+        setDangerArea(warning_area);
+        warning_area = new LatLng(37.2852545, 127.00747311);
+        setDangerArea(warning_area);
+        warning_area = new LatLng(37.2967921, 127.02059886);
+        setDangerArea(warning_area);
+        warning_area = new LatLng(37.26607092, 127.95753382);
+        setDangerArea(warning_area);
+        warning_area = new LatLng(37.25008313, 127.01867359);
+        setDangerArea(warning_area);
+        warning_area = new LatLng(37.29247771, 127.01918211);
+        setDangerArea(warning_area);
 
         //지오코더... GPS를 주소로 변환
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
@@ -632,7 +650,21 @@ public class LogIn extends FragmentActivity implements View.OnClickListener, Goo
     private AdapterView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Toast.makeText(getApplicationContext(), "hey", Toast.LENGTH_LONG).show();
+            drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout1);
+            switch(position){
+                case 0:
+                    Toast.makeText(getApplicationContext(), "0", Toast.LENGTH_LONG).show();
+                    break;
+                case 1:
+                    startActivity(new Intent(getApplicationContext(), LineGraphActivity.class));
+                    drawerLayout.closeDrawers();
+                    break;
+                case 2:
+                    Toast.makeText(getApplicationContext(), "2", Toast.LENGTH_LONG).show();
+                    break;
+                default:
+                    break;
+            }
         }
     };
 
@@ -681,4 +713,10 @@ public class LogIn extends FragmentActivity implements View.OnClickListener, Goo
 
     }
 
+    public void setDangerArea(LatLng warning_area){
+        MarkerOptions markerOptions1 = new MarkerOptions();
+        markerOptions1.position(warning_area);
+        markerOptions1.title("warning_area");
+        warningMap.addMarker(markerOptions1);
+    }
 }

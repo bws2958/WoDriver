@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.wodriver">
 
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -10,6 +12,11 @@
         android:name="com.wodriver.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
     <uses-permission android:name="com.wodriver.permission.C2D_MESSAGE" />
+
+    <uses-permission android:name="com.samsung.accessory.permission.ACCESSORY_FRAMEWORK"/>
+    <uses-permission android:name="com.samsung.android.providers.context.permission.WRITE_USE_APP_FEATURE_SURVEY"/>
+    <uses-permission android:name="com.samsung.wmanager.ENABLE_NOTIFICATION"/>
+    <uses-permission android:name="com.samsung.WATCH_APP_TYPE.Companion"/>
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -58,6 +65,11 @@
         <activity android:name=".AWS.userpool.MFAActivity"
             android:label="MFA Code"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize">
+            </activity>
+
+        <activity android:name=".LineGraphActivity"
+            android:label="Line Graph"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize">
 
         </activity>
         <activity android:name=".AWS.userpool.SignUpActivity"
@@ -75,11 +87,23 @@
 
         <service android:name="com.amazonaws.mobile.downloader.service.DownloadService" />
 
+        <service android:name=".ConsumerService"/>
+
         <receiver android:name="com.amazonaws.mobile.downloader.service.NetworkStateListener"
             android:exported="false"
             android:enabled="false">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="com.samsung.android.sdk.accessory.RegisterUponInstallReceiver">
+            <intent-filter> <action android:name="com.samsung.accessory.action.REGISTER_AGENT"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="com.samsung.android.sdk.accessory.ServiceConnectionIndicationBroadcastReceiver">
+            <intent-filter> <action android:name="com.samsung.accessory.action.SERVICE_CONNECTION_REQUESTED"/>
             </intent-filter>
         </receiver>
 
@@ -104,6 +128,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY" android:value="@string/android_api_key" />
         <!-- END - GOOGLE MAP API   -->
+
+        <meta-data android:name="AccessoryServicesLocation" android:value="/res/xml/accessoryservices.xml"/>
+        <meta-data android:name="GearAppType" android:value="wgt"/>
     </application>
 
 </manifest>

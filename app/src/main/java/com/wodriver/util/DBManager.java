@@ -17,6 +17,10 @@ public class DBManager extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db){
         db.execSQL("CREATE TABLE USER_INFO(_id INTEGER PRIMARY KEY AUTOINCREMENT, id TEXT, password TEXT, " +
                 "given_name TEXT, email TEXT, phone TEXT);");
+
+        db.execSQL("CREATE TABLE HR_DATA(_id INTEGER PRIMARY KEY AUTOINCREMENT, hr REAL, x REAL, y REAL, z REAL);");
+
+        db.execSQL("CREATE TABLE LATLON(_id INTEGER PRIMARY KEY AUTOINCREMENT, lat REAL, lon REAL);");
     }
 
     @Override
@@ -45,19 +49,49 @@ public class DBManager extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         String str = "";
 
-        Cursor cursor = db.rawQuery("select * from USER_INFO", null);
+        Cursor cursor = db.rawQuery("select * from HR_DATA", null);
         while(cursor.moveToNext()) {
             str += cursor.getInt(0)
-                    + " : userName "
+                    + " : hr "
+                    + cursor.getDouble(1)
+                    + ", x = "
+                    + cursor.getDouble(2)
+                    + ", y = "
+                    + cursor.getDouble(3)
+                    + ", z = "
+                    + cursor.getDouble(4)
+                    + "\n";
+        }
+
+        return str;
+    }
+
+    public String Print_hr_Data() {
+        SQLiteDatabase db = getReadableDatabase();
+        String str = "";
+
+        Cursor cursor = db.rawQuery("select * from HR_DATA", null);
+        while(cursor.moveToNext()) {
+            str += cursor.getInt(0)
+                    + " : hr "
                     + cursor.getString(1)
-                    + ", password = "
+                    + "\n";
+        }
+
+        return str;
+    }
+
+    public String print_lanlon(){
+        SQLiteDatabase db = getReadableDatabase();
+        String str = "";
+
+        Cursor cursor = db.rawQuery("select * from LATLON", null);
+        while(cursor.moveToNext()) {
+            str += cursor.getInt(0)
+                    + " : lat "
+                    + cursor.getString(1)
+                    + " : lon "
                     + cursor.getString(2)
-                    + ", given_name = "
-                    + cursor.getString(3)
-                    + ", email = "
-                    + cursor.getString(4)
-                    + ", phone = "
-                    + cursor.getString(5)
                     + "\n";
         }
 

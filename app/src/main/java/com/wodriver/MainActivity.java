@@ -1,14 +1,21 @@
 package com.wodriver;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Geocoder;
 import android.location.Location;
 
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.amazonaws.services.s3.internal.Constants;
 import com.google.android.gms.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -23,6 +30,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.Manifest;
+import android.content.ServiceConnection;
+import android.content.ComponentName;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -62,7 +71,11 @@ import java.util.Locale;
 public class MainActivity extends FragmentActivity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         LocationListener, OnMapReadyCallback{
 
+//    AmazonDynamoDBClient ddbClient;
+//    DynamoDBMapper mapper;
+
     public static Activity activity;
+    private ConsumerService mConsumerService = null;
 
     private static final String TAG = "@@@";
     private GoogleApiClient mGoogleApiClient = null;
@@ -107,13 +120,15 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private ListView listView;
 
     public boolean isUserSignedIn;
-
+    private boolean mIsBound = false;
 
     private LocationManager mLocMgr;
 
     /** Buttons in drawerlayout */
     private Button signUpButton;
     private Button signInButton;
+    private Button ConnectionButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +148,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         signUpButton = (Button) findViewById(R.id.button_signup);
         signUpButton.setOnClickListener(this);
 
+        ConnectionButton = (Button) findViewById(R.id.button_connect);
+        ConnectionButton.setOnClickListener(this);
+
+        mIsBound = bindService(new Intent(MainActivity.this, ConsumerService.class), mConnection, Context.BIND_AUTO_CREATE);
+
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         mapFragment = (MapFragment) getFragmentManager()
@@ -151,8 +171,19 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             }
         }.start();
 
+        try{
+            DBManager dbManager = new DBManager(getApplicationContext(), "WoDriver.db", null, 1);
+            dbManager.insert("insert into HR_DATA values(null, '0', '0', '0', '0');");
+            dbManager.delete("DELETE FROM HR_DATA");
+        }catch (Exception e){
+
+        }
+
+
 
     }
+
+
 
     public String readJSON(){
         StringBuilder JSONdata1 = new StringBuilder();
@@ -420,17 +451,19 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         Log.d( TAG, "OnDestroy");
 
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.unregisterConnectionCallbacks(this);
-            mGoogleApiClient.unregisterConnectionFailedListener(this);
-
-            if (mGoogleApiClient.isConnected()) {
-                LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        // Clean up connections
+        if (mIsBound == true && mConsumerService != null) {
+            if (mConsumerService.closeConnection() == false) {
+//                updateTextView("Disconnected");
+//                mMessageAdapter.clear();
             }
-
-            mGoogleApiClient.disconnect();
-            mGoogleApiClient = null;
         }
+        // Un-bind service
+        if (mIsBound) {
+            unbindService(mConnection);
+            mIsBound = false;
+        }
+
 
         super.onDestroy();
     }
@@ -440,6 +473,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     public void onLocationChanged(Location location) {
 
         String errorMessage = "";
+        int sig = 0;
 
         googleMap.clear();
 
@@ -452,22 +486,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         googleMap.addMarker(markerOptions);
 
         //지도 상에서 보여주는 영역 이동
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(17));
+//        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+//        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         googleMap.getUiSettings().setCompassEnabled(true);
-
-        LatLng warning_area = new LatLng(37.284331, 127.044453);
-        MarkerOptions markerOptions1 = new MarkerOptions();
-        markerOptions1.position(warning_area);
-        markerOptions1.title("warning_area");
-        warningMap.addMarker(markerOptions1);
-
-        warning_area = new LatLng(37.286552, 127.045823);
-        markerOptions1 = new MarkerOptions();
-        markerOptions1.position(warning_area);
-        markerOptions1.title("warning_area");
-        warningMap.addMarker(markerOptions1);
-
 
         //지오코더... GPS를 주소로 변환
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
@@ -504,21 +525,48 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             Toast.makeText( this, errorMessage, Toast.LENGTH_LONG).show();
         } else {
             Address address = addresses.get(0);
+
+            LatLng warning_area = new LatLng(37.284331, 127.044453);
+            setDangerArea(warning_area);
+            warning_area = new LatLng(37.286552, 127.045823);
+            setDangerArea(warning_area);
+
             warning_lat1 = 37.284331;
             warning_lon1 = 127.044453;
 
             warning_lat = 37.286552;
             warning_lon = 127.045823;
 
+//            Toast.makeText( this, "Warning Area", Toast.LENGTH_LONG).show();
+            mConsumerService.sendData("vibration");
 
             if((location.getLatitude() > warning_lat-0.0004 && location.getLatitude() < warning_lat + 0.0004) && (location.getLongitude() > warning_lon - 0.0004 && location.getLongitude() < warning_lon + 0.0004)){
 //                Toast.makeText( this, "Warning Area", Toast.LENGTH_LONG).show();
+//                if(sig == 0) {
+            //    try{
+                    mConsumerService.sendData("vibration");
+               //     Thread.sleep(2000);
+           //     }catch (Exception e){
+
+           //     }
+
+//                    sig = 1;
+//                }
+
             }
 
             if((location.getLatitude() > warning_lat1-0.0004 && location.getLatitude() < warning_lat1 + 0.0004) && (location.getLongitude() > warning_lon1 - 0.0004 && location.getLongitude() < warning_lon1 + 0.0004)){
 //                Toast.makeText( this, "Warning Area", Toast.LENGTH_LONG).show();
+                mConsumerService.sendData("vibration");
             }
         }
+    }
+
+    public void setDangerArea(LatLng warning_area){
+        MarkerOptions markerOptions1 = new MarkerOptions();
+        markerOptions1.position(warning_area);
+        markerOptions1.title("warning_area");
+        warningMap.addMarker(markerOptions1);
     }
 
     @Override
@@ -613,20 +661,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 break;
         }
     }
-//
-//    private void setupSignInButtons(){
-//        signOutButton = (Button) findViewById(R.id.button_signout);
-//        signOutButton.setOnClickListener(this);
-//
-//        signInButton = (Button) findViewById(R.id.button_signin);
-//        signInButton.setOnClickListener(this);
-//
-//        final boolean isUserSignedIn = identityManager.isUserSignedIn();
-//
-//        signOutButton.setVisibility(isUserSignedIn ? View.VISIBLE : View.INVISIBLE);
-//        signInButton.setVisibility(!isUserSignedIn ? View.VISIBLE : View.INVISIBLE);
-//
-//    }
 
    public boolean onOptionsItemSelected(MenuItem item){
        return true;
@@ -651,19 +685,40 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         }
         if(view == signInButton){
             // Start the sign-in activity. Do not finish this activity to allow the user to navigate back.
-            startActivity(new Intent(this, SignInActivity.class));
+            startActivity(new Intent(this, LogIn.class));
 
 //            // Close the navigation drawer.
             drawerLayout.closeDrawers();
 //            finish();
             return;
         }
-    }
+        if(view == ConnectionButton){
+            if (mIsBound == true && mConsumerService != null) {
+                Log.d("gear", "good");
+                mConsumerService.findPeers();
+            }
+        }
 
+    }
+    private final ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            mConsumerService = ((ConsumerService.LocalBinder) service).getService();
+//            updateTextView("onServiceConnected");
+            Log.d("Seccess", "connect");
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName className) {
+            mConsumerService = null;
+            mIsBound = false;
+            Log.d("fail", "disconnect");
+//            updateTextView("onServiceDisconnected");
+        }
+    };
     protected void onResume(){
         super.onResume();
 
-//        setupSignInButtons();
 
         // Obtain a reference to the mobile client
         final AWSMobileClient awsMobileClient = AWSMobileClient.defaultMobileClient();

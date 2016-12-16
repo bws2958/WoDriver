@@ -1,1 +1,1 @@
-include ':app'
+include ':app', ':lib', ':accessory-v2.5.0'

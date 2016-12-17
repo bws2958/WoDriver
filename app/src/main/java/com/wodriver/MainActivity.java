@@ -685,7 +685,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         }
         if(view == signInButton){
             // Start the sign-in activity. Do not finish this activity to allow the user to navigate back.
-            startActivity(new Intent(this, LogIn.class));
+            startActivity(new Intent(this, SignInActivity.class));
 
 //            // Close the navigation drawer.
             drawerLayout.closeDrawers();

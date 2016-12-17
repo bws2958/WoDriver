@@ -693,6 +693,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             return;
         }
 
+
         if(view == ConnectionButton){
             if (mIsBound == true && mConsumerService != null) {
                 Log.d("gear", "good");
